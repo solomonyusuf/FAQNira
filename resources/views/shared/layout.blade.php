@@ -1,6 +1,6 @@
 <?php
  $category = \App\Models\ArticleCategory::where(['published'=> true])->orderBy('title', 'ASC')->get();
-
+$count = 101;
 ?>
 
 <!DOCTYPE html>
@@ -196,47 +196,55 @@
     </div>
 </header>
 
-
+<style>
+    .accordion-button:not(.collapsed) {
+        color: black;
+        background-color: #fff;
+    }
+</style>
 <div class="relative mx-auto flex max-w-7xl justify-center px-2 lg:px-8">
     <div class="hidden lg:relative lg:block lg:flex-none">
         <div
             class="sticky top-[4.5rem] -ml-0.5 h-[calc(100vh-4.5rem)] w-64 overflow-y-auto overflow-x-hidden pt-16 pl-0.5 pr-8 xl:w-72 xl:pr-16">
             <nav class="text-sm">
-                 <ul class="space-y-9">
+                <div id="accordionExample" style="border-display:none;" class="accordion border-0">
                     @foreach($category as $data)
-                        <?php
+                            <?php
+
                             $topics = \App\Models\Article::
-                                              where(['article_category_id' => $data->id], ['published'=> true])
-                                            ->orderBy('title', 'ASC')
-                                            ->get();
+                            where(['article_category_id' => $data->id], ['published'=> true])
+                                ->orderBy('title', 'ASC')
+                                ->get();
                             ?>
-                        <li>
-                            <h4 style="display:inline;" class="font-display font-semibold text-slate-900">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm dropdown-toggle" type="button" id="{{$data->title}}" data-bs-toggle="dropdown" aria-expanded="false">
-                                       <span style="font-size: 17px;">{{$data->title}} </span>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="{{$data->title}}">
+
+                        <div style="border-display:none;" class="accordion-item border-0">
+                            <h2 id="headingOne{{$count++}}" class="accordion-header" style="border-display:none;">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{$count}}" aria-expanded="false" aria-controls="collapseOne{{$count}}">
+                                   {{$data->title}}
+                                </button>
+                            </h2>
+                            <div id="collapseOne{{$count}}" class="accordion-collapse collapse show" aria-labelledby="headingOne{{$count}}" data-bs-parent="#accordionExample" style="">
+                                <div class="accordion-body" style="margin-left:-15px;margin-top:-15px;">
+
+                                    <ul class="">
                                         @foreach($topics as $topic)
-                                            <li><a
-                                                    class="dropdown-item"
+                                            <li class="mb-2 "><a
+                                                    class="text-dark"
                                                     href="{{ url(route('home').'?article_id='.$topic->id) }}">{{$topic->title}}</a></li>
                                         @endforeach
                                     </ul>
-                                </div>
-                            </h4>
 
-                            {{--<ul class="mt-4 space-y-4 border-slate-200">
-                                @foreach($topics as $topic)
-                                <li class="relative"><a
-                                        class="block w-full pl-3.5 before:pointer-events-none before:absolute before:left-0.5 before:top-1/2 before:h-0.5 before:w-1.5 before:-translate-y-1/2 text-sky-500 before:bg-sky-500"
-                                        href="{{ url(route('home').'?article_id='.$topic->id) }}">{{$topic->title}}</a></li>
-                                @endforeach
-                           </ul>--}}
-                        </li>
+                                </div>
+                            </div>
+                        </div>
+
+
                     @endforeach
 
-                </ul>
+
+
+                    <div></div></div>
+
             </nav>
         </div>
     </div>
