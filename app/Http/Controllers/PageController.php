@@ -7,6 +7,7 @@ use App\Mail\ContactMail;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\DatabaseKey;
+use App\Models\AccessRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -81,6 +82,11 @@ class PageController
 
     public function AllUsers()
     {
+        if(auth()->user()?->role !='admin')
+        {
+            toast('Unauthorized','error');
+            return redirect()->back();
+        }
         return view('admin.users');
     }
     public function ArticleCategories()
@@ -91,9 +97,50 @@ class PageController
     {
         return view('admin.articles', ['id'=> $id]);
     }
+    public function Department()
+    {
+        if(auth()->user()?->role !='admin')
+        {
+            toast('Unauthorized','error');
+            return redirect()->back();
+        }
+        return view('admin.departments');
+    }
+
+    public function Requests()
+    {
+        if(auth()->user()?->role !='admin')
+        {
+            toast('Unauthorized','error');
+            return redirect()->back();
+        }
+        return view('admin.requests');
+    }
     public function EditArticle($id)
     {
-        return view('admin.edit_article', ['data'=> Article::find($id)]);
+        $user = auth()->user();
+        $data = Article::find($id);
+        $access = AccessRequest::where([
+            'article_id'=> $data->id,
+            'access_granted'=> 'granted',
+            ])
+            ->first();
+
+       if($data->classified == 1)
+       {
+            if($access == null)
+            {
+                alert()->error('Unauthorized','Sorry the resource you are trying to access is classified');
+                return redirect()->back();
+            }
+            if($user?->role != 'admin' && $access?->access_granted != 'granted')
+            {
+                alert()->error('Unauthorized','Sorry the resource you are trying to access is classified');
+                return redirect()->back();
+            }
+       }
+
+        return view('admin.edit_article', ['data'=> $data, 'access'=> $access]);
     }
     public function Search()
     {

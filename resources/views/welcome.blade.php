@@ -2,12 +2,22 @@
 @section('body')
         <?php
 
-        $category = \App\Models\ArticleCategory::where(['published'=> true])->orderBy('title', 'ASC')->first();
-
-        $topic = \App\Models\Article::
-            where('article_category_id', $category->id)
-            ->orderBy('title', 'ASC')
+        $category = \App\Models\ArticleCategory::
+            where(['title' => 'introduction'])
             ->first();
+        $topic = \App\Models\Article::
+            where(['article_category_id' => $category->id ])
+            ->first();
+
+        if(!$topic)
+        {
+            $category = \App\Models\ArticleCategory::where(['published'=> true])->orderBy('title', 'ASC')->first();
+
+            $topic = \App\Models\Article::
+            where('article_category_id', $category->id)
+                ->orderBy('title', 'ASC')
+                ->first();
+        }
 
         if(request()?->article_id)
         {
@@ -16,6 +26,7 @@
 
 
         ?>
+
         <article>
             <header class="mb-9">
                 <p class="font-display text-sm font-semibold text-sky-500 mb-1">{{ \App\Models\ArticleCategory::find($topic->article_category_id)?->title }}</p>

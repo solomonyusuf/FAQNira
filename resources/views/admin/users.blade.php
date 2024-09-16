@@ -37,6 +37,22 @@
                                         <input name="last_name" type="text" id="nameBasic" required class="form-control" />
                                     </div>
                                     <div class=" mb-3">
+                                        <label for="nameBasic" class="form-label">Role</label>
+                                        <select name="role" type="text" id="nameBasic" required class="form-control">
+                                          <option value="admin">Admin</option>
+                                          <option value="staff">Staff</option>
+                                        </select>
+                                    </div>
+                                    <div class=" mb-3">
+                                        <label for="nameBasic" class="form-label">Department</label>
+                                        <select name="department_id" type="text" id="nameBasic" required class="form-control">
+                                            @foreach (\App\Models\Department::get() as $dept)
+                                            <option value="{{$dept->id}}">{{$dept->title}}</option>
+                                            @endforeach
+
+                                        </select>
+                                    </div>
+                                    <div class=" mb-3">
                                         <label for="nameBasic" class="form-label">Email</label>
                                         <input name="email" type="email" id="nameBasic" required class="form-control" />
                                     </div>
@@ -115,6 +131,35 @@
                                                             <div class=" mb-3">
                                                                 <label for="nameBasic" class="form-label">Last Name</label>
                                                                 <input value="{{$data->last_name}}" name="last_name" type="text" id="nameBasic" required class="form-control" />
+                                                            </div>
+                                                            <div class=" mb-3">
+                                                                <label for="nameBasic" class="form-label">Role</label>
+                                                                <select name="role" type="text" id="nameBasic" required class="form-control">
+                                                                  @if($data->role =='admin')
+                                                                  <option selected value="admin">Admin</option>
+                                                                  <option value="staff">Staff</option>
+
+                                                                  @else
+                                                                  <option value="admin">Admin</option>
+                                                                  <option selected value="staff">Staff</option>
+
+
+
+                                                                  @endif
+                                                                   </select>
+                                                            </div>
+                                                            <div class=" mb-3">
+                                                                <label for="nameBasic" class="form-label">Department</label>
+                                                                <select name="department_id" type="text" id="nameBasic" required class="form-control">
+                                                                    @foreach (\App\Models\Department::get() as $dept)
+                                                                    @if($data->department_id == $dept->id)
+                                                                    <option selected value="{{$dept->id}}">{{$dept->title}}</option>
+                                                                    @else
+                                                                    <option value="{{$dept->id}}">{{$dept->title}}</option>
+
+                                                                    @endif
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                             <div class=" mb-3">
                                                                 <label for="nameBasic" class="form-label">Email</label>

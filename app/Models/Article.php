@@ -24,6 +24,8 @@ class Article extends Model
         'id',
         'author',
         'title',
+        'department_id',
+        'classified',
         'article_category_id',
         'body',
         'helpful',

@@ -4,12 +4,118 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\Department;
 use App\Models\User;
+use App\Models\AccessRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AdminController
 {
+
+    public static function RequestForAccess(Request $request)
+    {
+        try
+        {
+            AccessRequest::create(array(
+                    'article_id' => $request->article_id,
+                    'user_id' => $request->user_id,
+                    'staff_name'  => $request->staff_name,
+                    'reason' => $request->reason,
+            ));
+
+            toast('Request Submitted Successfully', 'success');
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();
+            toast('An Error Occured', 'error');
+        }
+
+        return redirect()->back();
+
+    }
+    public static function UpdateAccess(Request $request)
+    {
+        try
+        {
+            $model = AccessRequest::find($request->id);
+
+            $model->update(array(
+               'duration' => $request?->duration,
+                'expiry'=> $request?->expiry,
+                'access_granted'=> $request?->access_granted
+            ));
+            $model->save();
+
+            toast('Update Successful', 'success');
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();
+            toast('An Error Occured', 'error');
+        }
+
+        return redirect()->back();
+
+    }
+    public static function DeleteAccess($id)
+    {
+        AccessRequest::find($id)->delete();
+        toast('Deletion Successful','success');
+        return redirect()->back();
+
+    }
+
+
+    public static function CreateDepartment(Request $request)
+    {
+        try
+        {
+            Department::create(array(
+                 'title'=> $request->title
+            ));
+
+            toast('Creation Successful', 'success');
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();
+            toast('An Error Occured', 'error');
+        }
+
+        return redirect()->back();
+
+    }
+    public static function UpdateDepartment(Request $request)
+    {
+        try
+        {
+            $model = Department::find($request->id);
+
+            $model->update(array(
+                'title'=> $request->title
+            ));
+            $model->save();
+
+            toast('Update Successful', 'success');
+        }
+        catch (\Exception $e)
+        {
+            DB::rollBack();
+            toast('An Error Occured', 'error');
+        }
+
+        return redirect()->back();
+
+    }
+    public static function DeleteDepartment($id)
+    {
+        Department::find($id)->delete();
+        toast('Deletion Successful','success');
+        return redirect()->back();
+
+    }
 
     public static function CreateUser(Request $request)
     {
@@ -34,7 +140,6 @@ class AdminController
         return redirect()->back();
 
     }
-
     public static function UpdateUser(Request $request)
     {
         try
@@ -127,6 +232,8 @@ class AdminController
                 'article_category_id'=> $request->article_category_id,
                 'body'=> $request->body,
                 'published'=> $request->published,
+                'classified'=> $request->classified,
+                'department_id'=> $request->department_id,
             ));
 
             toast('Creation Successful', 'success');
@@ -152,6 +259,8 @@ class AdminController
                 'article_category_id'=> $request->article_category_id,
                 'body'=> $request->body,
                 'published'=> $request->published,
+                'classified'=> $request->classified,
+                'department_id'=> $request->department_id,
             ));
             $model->save();
 

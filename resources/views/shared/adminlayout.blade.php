@@ -105,14 +105,32 @@
 
                 </li>
 
+                @if(auth()->user()?->role == 'admin')
+                <li class="menu-item">
+                    <a href="{{route('departments')}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-folder"></i>
+                        <div data-i18n="Misc">Departments</div>
+                    </a>
+                </li>
+                <?php
+                  $ct = \App\Models\AccessRequest::where('access_granted', 'pending')->count();
+                ?>
+                <li class="menu-item">
+                    <a href="{{route('requests')}}" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-news"></i>
+                        <div data-i18n="Misc">Access Requests </div>
+                        @if($ct > 0)
+                        &nbsp;<span class="badge bg-danger">{{$ct}}</span>
+                       @endif
+                    </a>
+                </li>
                 <li class="menu-item">
                     <a href="{{route('all_users')}}" class="menu-link">
                         <i class="menu-icon tf-icons bx bx-group"></i>
                         <div data-i18n="Misc">Users</div>
                     </a>
-
                 </li>
-
+                @endif
 
             </ul>
         </aside>

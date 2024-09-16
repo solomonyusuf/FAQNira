@@ -6,7 +6,7 @@
     <div class="row">
         <h4 class="py-3 mb-4">
             <span class="text-muted fw-light"> Article Categories </span>
-
+            @if(auth()->user()?->role == 'admin')
             <div class="mt-3">
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#basicModal">
@@ -50,6 +50,7 @@
                     </form>
                 </div>
             </div>
+            @endif
         </h4>
         <div class="row">
             <div class="card">
@@ -59,7 +60,7 @@
                         <thead>
                         <tr>
 
-                            <th>ID</th>
+                             <th>ID</th>
                             <th>Title</th>
                             <th>Published</th>
                             <th>Action</th>
@@ -68,8 +69,10 @@
                         <tbody>
                         @foreach($list as $data)
                             <tr>
-                                <td>{{\Illuminate\Support\Str::limit($data->id, 8,'')}}</td>
                                 <td>
+                                    {{\Illuminate\Support\Str::limit($data->id,8,'')}}
+                                </td>
+                                   <td>
                                   {{$data->title}}
                                 </td>
                                 <td>
@@ -80,9 +83,12 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="mt-3">
+
+                                   <a href="{{route('articles',$data->id)}}"   class="btn btn-success mb-2">Articles</a>
+                                   @if(auth()->user()?->role == 'admin')
+                                     <div class="mt-3">
                                         <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#basicModal{{$data->id}}">
+                                        <button type="button" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#basicModal{{$data->id}}">
                                             Edit Category
                                         </button>
 
@@ -128,9 +134,10 @@
                                             </form>
                                         </div>
                                     </div>
-                                     <a href="{{route('articles',$data->id)}}"   class="btn btn-success mb-2">Articles</a>
+
                                      <a href="{{route('delete_category',$data->id)}}"   class="btn btn-danger mb-2">Delete</a>
-                                </td>
+                                     @endif
+                                    </td>
 
                             </tr>
                         @endforeach

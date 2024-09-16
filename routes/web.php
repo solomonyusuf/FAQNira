@@ -42,6 +42,8 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/edit-article/{id}', [PageController::class, 'EditArticle'])->name('edit_article');
     Route::get('/search', [PageController::class, 'Search'])->name('search');
     Route::get('/logout', [PageController::class, 'Logout'])->name('logout');
+    Route::get('/departments', [PageController::class, 'Department'])->name('departments');
+    Route::get('/requests', [PageController::class, 'Requests'])->name('requests');
 
 
 //REQUESTS
@@ -54,9 +56,20 @@ Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/update_category', [AdminController::class, 'UpdateCategory'])->name('update_category');
     Route::get('/delete_category/{id}', [AdminController::class, 'DeleteCategory'])->name('delete_category');
 
+    Route::post('/create_department', [AdminController::class, 'CreateDepartment'])->name('create_department');
+    Route::post('/update_department', [AdminController::class, 'UpdateDepartment'])->name('update_department');
+    Route::get('/delete_department/{id}', [AdminController::class, 'DeleteDepartment'])->name('delete_department');
+
+
+    Route::post('/update_access', [AdminController::class, 'UpdateAccess'])->name('update_access');
+    Route::get('/delete_access/{id}', [AdminController::class, 'DeleteAccess'])->name('delete_access');
+
+
+
      Route::post('/create_article', [AdminController::class, 'CreateArticle'])->name('create_article');
     Route::post('/update_article', [AdminController::class, 'UpdateArticle'])->name('update_article');
     Route::get('/delete_article/{id}', [AdminController::class, 'DeleteArticle'])->name('delete_article');
+    Route::post('/request_access/{id}', [AdminController::class, 'RequestForAccess'])->name('request_access');
 
 
 
