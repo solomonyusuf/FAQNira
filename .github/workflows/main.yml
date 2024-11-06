@@ -2,7 +2,7 @@ name: FAQ_Deploy
 on:
   push:
     branches:
-      - main #branch
+      - master #branch
 jobs:
   web-deploy:
     name: Deploy
