@@ -33,4 +33,8 @@ class Article extends Model
         'published',
     ];
 
+    public function category()
+	{
+		return $this->belongsTo(ArticleCategory::class);
+	}
 }

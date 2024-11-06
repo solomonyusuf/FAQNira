@@ -28,9 +28,9 @@ class KeyGenerateMail extends Mailable
 
     public function build()
     {
-        return $this->subject($this->mail_subject)->view('mails.generateKey', [
+        return $this->subject($this->subject_mail)->view('mails.generateKey', [
             'subject_mail'=> $this->subject_mail,
-            'key'=> $this->phone_no
+            'token'=> $this->key
 
         ]);
     }

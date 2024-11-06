@@ -1,87 +1,163 @@
-@extends('shared.layout')
-@section('body')
-        <?php
-
-        $category = \App\Models\ArticleCategory::
-            where(['title' => 'introduction'])
-            ->first();
-        $topic = \App\Models\Article::
-            where(['article_category_id' => $category->id ])
-            ->first();
-
-        if(!$topic)
-        {
-            $category = \App\Models\ArticleCategory::where(['published'=> true])->orderBy('title', 'ASC')->first();
-
-            $topic = \App\Models\Article::
-            where('article_category_id', $category->id)
-                ->orderBy('title', 'ASC')
-                ->first();
+<?php
+$models = \App\Models\Article::where(['published' => true])->limit(4)->get();
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Platform - NiRA Knowledge Base</title>
+    <!-- Favicon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="icon" type="image/x-icon" href="nira_logo.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@600;700&display=swap">
+    <style>
+        body {
+            font-family: 'Wix Madefor Display', sans-serif;
         }
-
-        if(request()?->article_id)
-        {
-           $topic = \App\Models\Article::find(request()?->article_id);
+        .hero {
+            background: url('img/8970.jpg') no-repeat center center;
+            background-size: cover;
+            color: #fff;
+            padding: 120px 0;
+            text-align: center;
         }
-
-
-        ?>
-
-        <article>
-            <header class="mb-9">
-                <p class="font-display text-sm font-semibold text-sky-500 mb-1">{{ \App\Models\ArticleCategory::find($topic->article_category_id)?->title }}</p>
-                <h1 class="font-display text-3xl tracking-tight text-slate-900 font-semibold">{{$topic->title}}</h1>
-            </header>
-            <div class="prose prose-slate max-w-none prose-headings:scroll-mt-28 prose-headings:font-display prose-headings:font-semibold lg:prose-headings:scroll-mt-[8.5rem] prose-lead:text-slate-500 prose-a:font-semibold prose-a:no-underline prose-pre:rounded-xl prose-pre:bg-slate-900 prose-pre:shadow-lg">
-                {!! $topic->body !!}
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .feature-icon {
+            font-size: 48px;
+            color: #26b874;
+            transition: transform 0.3s;
+        }
+        .feature-icon:hover {
+            transform: scale(1.1);
+        }
+        .card {
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-link{
+            color:#198754;
+        }
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.8s forwards;
+        }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    @include('sweetalert::alert')
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="img/nira_logo.png" alt="Logo" height="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('docs') }}">Docs</a></li>
+                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('login') }}">Sign In</a></li>
+                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
+                </ul>
             </div>
-        </article>
-        {{--<dl class="mt-12 flex">
-            <div>
-                <dt class="font-display text-sm font-semibold text-slate-900">Previous</dt>
-                <dd class="mt-1"><a class="text-sm text-slate-600 hover:text-slate-900" href="index-2.html"><span aria-hidden="true">←</span> Getting started</a></dd>
-            </div>
-            <div class="ml-auto text-right">
-                <dt class="font-display text-sm font-semibold text-slate-900">Next</dt>
-                <dd class="mt-1"><a class="text-sm text-slate-600 hover:text-slate-900" href="docs/understanding-caching.html">Understanding caching<!-- --> <span aria-hidden="true">→</span></a></dd>
-            </div>
-        </dl>--}}
-        <div class="mt-12 flex flex-col items-center space-y-6 border-t border-slate-200 pt-10">
-            <h3 class="font-display font-semibold text-slate-900 text-lg">Was this article helpful?</h3>
-            <div class="flex space-x-4">
-                @if(\Illuminate\Support\Facades\Session::get('article_id') == $topic->id)
-                    <button type="button" class="flex items-center space-x-2 min-w-[3.75rem] rounded-md bg-sky-50 px-2.5 py-1.5 text-sm font-semibold font-display text-sky-500 shadow-sm hover:bg-sky-100">
-                        <span>Thank you for the feedback</span>
-                    </button>
-                @else
-                    <form method="post" action="{{route('feedback')}}">
-                        @csrf
-                        <input value="helpful" name="response" hidden/>
-                        <input value="{{$topic->id}}" name="article_id" hidden/>
-                        <button type="submit" class="flex items-center space-x-2 min-w-[3.75rem] rounded-md bg-sky-50 px-2.5 py-1.5 text-sm font-semibold font-display text-sky-500 shadow-sm hover:bg-sky-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
-                            </svg>
-                            <span>Yes</span>
-                        </button>
-                    </form>
-
-                    <form method="post" action="{{route('feedback')}}">
-                        @csrf
-                        <input value="not_helpful" name="response" hidden/>
-                        <input value="{{$topic->id}}" name="article_id" hidden/>
-                        <button type="submit" class="flex items-center space-x-2 min-w-[3.75rem] rounded-md bg-sky-50 px-2.5 py-1.5 text-sm font-semibold font-display text-sky-500 shadow-sm hover:bg-sky-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                            <span>No</span>
-                        </button>`
-                    </form>
-                    @endif
-
-            </div>
-            <p class="text-slate-700 text-sm">Have more questions? <a class="underline hover:text-sky-500" href="{{route('contact')}}">Submit a request.</a></p>
         </div>
-    </div>
-</div>
-@endsection
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="display-4">Welcome to NiRA FAQ Platform</h1>
+            <p class="lead">Get answers to common questions and explore our knowledge base.</p>
+            <div class="search-bar my-4">
+                <form method="get" action="{{ route('search_all') }}">
+                    @csrf
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Search FAQs..." aria-label="Search FAQs">
+                        <button class="btn btn-success" type="submit">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h5>Comprehensive Search</h5>
+                    <p>Find answers quickly with our powerful search functionality.</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fa-brands fa-rocketchat"></i>
+                    </div>
+                    <h5>Instant Assistance</h5>
+                    <p>Access instant answers to frequently asked questions.</p>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fa-solid fa-shield"></i>
+                    </div>
+                    <h5>Reliable Information</h5>
+                    <p>Get trusted and accurate information verified by experts.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular FAQs Section -->
+    <section class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Popular FAQs</h2>
+            <div class="row">
+                @foreach ($models as $data)
+                <div class="col-md-6 mb-4 fade-in">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $data->title }}</h5>
+                            <p class="card-text">{!! \Str::limit($data->body, 40, '...') !!}</p>
+                            <a href="{{ url(route('docs').'?article_id='.$data->id) }}" class="card-link">Read more</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-5 text-center bg-success text-white">
+        <div class="container">
+            <h2 class="mb-3">Have more questions?</h2>
+            <p class="lead">Browse our full FAQ or contact support for further assistance.</p>
+            <a href="{{ route('docs') }}" class="btn btn-outline-light btn-lg">Explore More FAQs</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 bg-dark text-white text-center">
+        <p class="mb-0">&copy; 2024 NiRA. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

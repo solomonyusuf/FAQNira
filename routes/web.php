@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    //KeyGenerateJob::dispatch();
-
+    toast("Welcome to FAQ Platform", 'success');
     return view('welcome');
 })->name('home');
 
 Route::get('/login', [PageController::class , 'login'])->name('login');
 
+Route::get('/docs', [PageController::class , 'docs'])->name('docs');
 Route::get('/contact', [PageController::class , 'contact'])->name('contact');
 Route::get('/search_all', [PageController::class , 'Search_all'])->name('search_all');
 

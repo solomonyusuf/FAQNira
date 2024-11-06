@@ -26,4 +26,9 @@ class ArticleCategory extends Model
         'published',
     ];
 
+    public function articles()
+	{
+		return $this->hasMany(Article::class);
+	}
+
 }

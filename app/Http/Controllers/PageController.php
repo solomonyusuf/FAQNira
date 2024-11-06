@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Charts\DashboardChart;
 use App\Jobs\KeyGenerateJob;
 use App\Mail\ContactMail;
 use App\Models\Article;
@@ -30,19 +31,45 @@ class PageController
             $input = $request->all();
 
 
-            $credential = array('email'=> $input['email'], 'password'=> $input['password']);
 
-            if(auth()->attempt($credential, false))
+            if(count($input['token']) == 6)
             {
-                $user = auth()->user();
+                $token = implode('', $input['token']);
 
-                alert()->success("Welcome {$user?->first_name}", "Account login was successful");
-                return redirect()->route('dashboard');
+                $query_key = DatabaseKey::
+                whereDate('approved_date', '=', Carbon::now()->toDate())->first();
 
+                if(!$query_key)
+                {
+                    toast('No Database Key','error');
+                    return redirect()->back();
+                }
+                if($query_key?->key != $token)
+                {
+                    toast('Token Invalid','error');
+                    return redirect()->back();
+                }
+
+
+                $credential = array('email'=> $input['email'], 'password'=> $input['password']);
+
+                if(auth()->attempt($credential, false))
+                {
+                    $user = auth()->user();
+
+                    alert()->success("Welcome {$user?->first_name}", "Account login was successful");
+                    return redirect()->route('dashboard');
+
+                }
+                else
+                {
+                    alert()->error("Invalid Credentials", "Sorry unable to login at the moment due to wrong credentials");
+                    return redirect()->back();
+                }
             }
             else
             {
-                alert()->error("Invalid Credentials", "Sorry unable to login at the moment due to wrong credentials");
+                toast('Token Unrecognized','error');
                 return redirect()->back();
             }
 
@@ -55,10 +82,9 @@ class PageController
 
         return redirect()->back();
     }
-
     public function login()
     {
-        //KeyGenerateJob::dispatch();
+        KeyGenerateJob::dispatch();
 
         return view('login');
     }
@@ -69,15 +95,24 @@ class PageController
 
         $query = Article::where('title', 'like', '%'.$search.'%')
             ->orWhere('body', 'like', '%'.$search.'%')
-            ->get();
+            ->paginate(3);
 
 
-        return view('search', ['list_all'=> $query]);
+            if(count($query) == 0)
+                alert()->warning("No Results", 'Sorry no result has been found for the value you entered');
+            else
+            alert()->success("Result Found", 'Your results has been found and is being displayed.');
+
+        return view('search', ['list'=> $query]);
     }
 
     public function contact()
     {
         return view('contact');
+    }
+    public function docs()
+    {
+        return view('docs');
     }
 
     public function AllUsers()
@@ -160,13 +195,25 @@ class PageController
     }
     public function Dashboard()
     {
+        $temp = ArticleCategory::get();
         $article = Article::count();
-        $category = ArticleCategory::count();
+        $category = count($temp);
         $users = User::count();
         $helpful = Article::sum('helpful');
         $unhelpful =  Article::sum('not_helpful');
 
-        return view('admin.dashboard', ['unhelpful'=> $unhelpful, 'helpful'=> $helpful, 'article'=> $article, 'category'=> $category, 'user'=> $users]) ;
+        $array_count = [];
+
+        for($i = 0; $i < count($temp); $i++)
+        {
+            $array_count[$i] = count($temp[$i]?->articles);
+        }
+
+        $chart =  new DashboardChart;
+        $chart->dataset('Articles', 'line', $array_count)
+        ->color('#198754');;
+
+        return view('admin.dashboard', ['unhelpful'=> $unhelpful, 'helpful'=> $helpful, 'article'=> $article, 'category'=> $category, 'user'=> $users, 'chart'=> $chart]) ;
     }
 
     public function Account()
@@ -209,7 +256,7 @@ class PageController
         }
         $model->save();
 
-        toast('Thank you for feedback', 'success');
+        toast('Thank you for the feedback', 'success');
         return redirect()->back();
     }
 }

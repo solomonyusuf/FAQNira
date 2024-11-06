@@ -45,7 +45,7 @@
     <script src="{{asset('assets/js/config.js')}}"></script>
 </head>
 
-<body style="background: linear-gradient(to top, #1f1a17  0%, #00923f 100%);">
+<body style="background: url('img/bg2.png');">
 <!-- Content -->
 @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
 
@@ -53,7 +53,7 @@
     <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
             <!-- Register -->
-            <div class="card">
+            <div class="card shadow-lg">
                 <div class="card-body">
                     <!-- Logo -->
                     <div class="app-brand justify-content-center" style="margin-left:35px;margin-bottom: -25px;">
@@ -67,7 +67,7 @@
                            FAQ Platform
                         </strong>
                     </h4>
-                    <p class="mb-4 text-center">Please sign-in with your email</p>
+                    <p class="mb-4 text-center">Please sign-in with your email. For only authorized staffs or personnel</p>
 
                     <form action="{{route('post_login')}}" method="post" id="formAuthentication" class="mb-3" >
                         @csrf
@@ -94,9 +94,9 @@
                                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                             </div>
                         </div>
-                        {{--<div class="mb-3 form-password-toggle">
+                        <div class="mb-3 form-password-toggle">
                             <div class="d-flex justify-content-between">
-                                <label class="form-label" for="password">Access Key</label>
+                                <label class="form-label" for="password">Token</label>
                             </div>
                             <style>
                                 .otp-letter-input{
@@ -134,7 +134,7 @@
                             </div>
 
                         </div>
---}}
+
                         <div class="mb-3">
                             <button class="btn btn-success d-grid w-100" type="submit">Sign in</button>
                         </div>
@@ -161,6 +161,17 @@
                 const nextInput = inputs[index + 1];
                 if (nextInput) {
                     nextInput.focus();
+                }
+            }
+        });
+        // Handle keydown event (for moving backward)
+        input.addEventListener('keydown', function(event) {
+            // Check if the backspace key is pressed and the input is empty
+            if (event.key === 'Backspace' && input.value.length === 0) {
+                const prevInput = inputs[index - 1];
+                if (prevInput) {
+                    prevInput.focus();
+                    prevInput.value = prevInput.value.slice(0, prevInput.maxLength - 1); // Optional: delete last character from the previous input
                 }
             }
         });
