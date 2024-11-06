@@ -133,7 +133,7 @@ $models = \App\Models\Article::where(['published' => true])->limit(4)->get();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ $data->title }}</h5>
-                            <p class="card-text">{!! \Str::limit($data->body, 40, '...') !!}</p>
+                            <p class="card-text">{!! \Str::limit($data->body, 100, '...') !!}</p>
                             <a href="{{ url(route('docs').'?article_id='.$data->id) }}" class="card-link">Read more</a>
                         </div>
                     </div>
