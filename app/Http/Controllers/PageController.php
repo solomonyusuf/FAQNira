@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Charts\DashboardChart;
 use App\Jobs\KeyGenerateJob;
+use App\Mail\MeetingMail;
 use App\Mail\ContactMail;
 use App\Models\Article;
 use App\Models\ArticleCategory;
 use App\Models\DatabaseKey;
 use App\Models\AccessRequest;
 use App\Models\User;
+use App\Models\VirtualMeet;
+use JoisarJignesh\Bigbluebutton\Facades\Bigbluebutton;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +90,13 @@ class PageController
         KeyGenerateJob::dispatch();
 
         return view('login');
+    }
+
+    public function support()
+    {
+        $meet = VirtualMeet::get();
+
+        return view('support', ['meet'=> $meet]);
     }
 
     public function Search_all()
@@ -221,6 +231,31 @@ class PageController
         return view('admin.account', ['user'=> User::find(auth()?->user()?->id)]);
     }
 
+    public function guest_join($id)
+    {
+        $meet = VirtualMeet::find($id);
+
+        return redirect()->to(
+            Bigbluebutton::join([
+               'meetingID' =>  $meet->id,
+               'userName' =>  'Guest'.rand(00, 99),
+               'password' =>  $meet->guest_password
+            ])
+           );
+    }
+    public function host_join($id)
+    {
+        $meet = VirtualMeet::find($id);
+
+        return redirect()->to(
+            Bigbluebutton::join([
+               'meetingID' =>  $meet->id,
+               'userName' =>  'NiRA Host'.rand(00, 99),
+               'password' =>  $meet->host_password
+            ])
+           );
+    }
+
     public function send_contact(Request $request)
     {
         Mail::to('tech_support@nira.org.ng')->send(new ContactMail(
@@ -232,6 +267,38 @@ class PageController
 
         ));
         toast('Request has been sent', 'success');
+        return redirect()->back();
+    }
+
+    public function send_meeting(Request $request)
+    {
+     
+        $meet = VirtualMeet::create([
+            'title' => $request->title,
+            'duration' => intval($request->duration),
+            'schedule' => $request->schedule,
+            'host_password' => rand(1111, 5555),
+            'guest_password'=> rand(5555, 6666)
+        ]);
+
+        $createMeeting = Bigbluebutton::initCreateMeeting([
+            'meetingID' => $meet->id,
+            'meetingName' => $meet->title,
+            'attendeePW' => $meet->guest_password,
+            'moderatorPW' => $meet->host_password,
+        ]);
+
+        $createMeeting->setDuration($request->duration);
+        Bigbluebutton::create($createMeeting);
+
+
+        Mail::to('olafire03@gmail.com')->send(mailable: new MeetingMail(
+            $meet->id,
+            $meet->title,
+            $request->schedule
+
+        ));
+        toast('Meeting Created', 'success');
         return redirect()->back();
     }
 

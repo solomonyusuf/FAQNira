@@ -23,6 +23,9 @@ Route::get('/', function () {
 
 Route::get('/login', [PageController::class , 'login'])->name('login');
 
+Route::get('/host-join/{id}', [PageController::class , 'host_join'])->name('host_join');
+Route::get('/guest-join/{id}', [PageController::class , 'guest_join'])->name('guest_join');
+Route::get('/support', [PageController::class , 'support'])->name('support');
 Route::get('/docs', [PageController::class , 'docs'])->name('docs');
 Route::get('/contact', [PageController::class , 'contact'])->name('contact');
 Route::get('/search_all', [PageController::class , 'Search_all'])->name('search_all');
@@ -32,6 +35,7 @@ Route::get('/search_all', [PageController::class , 'Search_all'])->name('search_
 Route::post('/feedback', [PageController::class , 'feedback'])->name('feedback');
 Route::post('/post-login', [PageController::class , 'AccountLogin'])->name('post_login');
 Route::post('/send_contact', [PageController::class , 'send_contact'])->name('send_contact');
+Route::post('/send_support', [PageController::class , 'send_meeting'])->name('send_meeting');
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::get('/dashboard', [PageController::class, 'Dashboard'])->name('dashboard');

@@ -13,7 +13,8 @@ $count = 101;
     <meta name="description" content="Knowledge Base TailwindCSS HTML Template">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <style>
         .accordion-button:not(.collapsed) {
             color: black;
@@ -48,6 +49,9 @@ $count = 101;
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
+                    <a class="nav-link" href="{{ route('support') }}">Support</a>
+                </li>
+                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('home') }}">Docs</a>
                 </li>
                 <li class="nav-item">

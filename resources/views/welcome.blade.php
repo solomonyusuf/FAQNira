@@ -69,9 +69,10 @@ $models = \App\Models\Article::where(['published' => true])->limit(4)->get();
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('docs') }}">Docs</a></li>
-                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('login') }}">Sign In</a></li>
-                    <li class="nav-item ml-4"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
+                    <li class="nav-item ml-5"><a class="nav-link" href="{{ route('support') }}">Support</a></li>
+                    <li class="nav-item ml-5"><a class="nav-link" href="{{ route('docs') }}">Docs</a></li>
+                    <li class="nav-item ml-5"><a class="nav-link" href="{{ route('login') }}">Sign In</a></li>
+                    <li class="nav-item ml-5"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -133,7 +134,7 @@ $models = \App\Models\Article::where(['published' => true])->limit(4)->get();
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ $data->title }}</h5>
-                            <p class="card-text">{!! \Str::limit($data->body, 100, '...') !!}</p>
+                            <p class="card-text">{!! \Str::limit($data->body, 500, '...') !!}</p>
                             <a href="{{ url(route('docs').'?article_id='.$data->id) }}" class="card-link">Read more</a>
                         </div>
                     </div>

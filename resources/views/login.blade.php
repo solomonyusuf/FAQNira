@@ -56,13 +56,13 @@
             <div class="card shadow-lg">
                 <div class="card-body">
                     <!-- Logo -->
-                    <div class="app-brand justify-content-center" style="margin-left:35px;margin-bottom: -25px;">
+                    <div class="app-brand justify-content-center mb-3" style="margin-left:35px;margin-bottom: -25px;">
                         <a href="{{route('home')}}" class="app-brand-link gap-3">
-                          <img src="{{asset('nira_logo.png')}}" style="height:150px;width:500px;" />
+                          <img src="{{asset('nira_logo.png')}}" style="height:60px;" />
                         </a>
                     </div>
                     <!-- /Logo -->
-                    <h4 class="mb-2 text-capitalize text-center">
+                    <h4 class="mb-2 mt-3 text-capitalize text-center">
                         <strong>
                            FAQ Platform
                         </strong>
